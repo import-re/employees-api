@@ -47,9 +47,9 @@ const formatEmployeeDTO = (queryResult: EmployeeQueryResult): EmployeeDTO => {
 export async function getEmployees(fastify: FastifyInstance, query: SearchQueryType) {
     const data = fastify.db.from(TABLE_NAME).leftJoin("tribes", "tribes.tribe_id", "employees.tribe_id").select();
     
-    if (query.name) data.whereLike("employees.name", `%${query.name}%`);
-    if (query.title) data.whereLike("employees.title", `%${query.title}%`);
-    if (query.tribe) data.whereLike("tribes.tribe_name", `%${query.tribe}%`);
+    if (query.name) data.whereILike("employees.name", `%${query.name}%`);
+    if (query.title) data.whereILike("employees.title", `%${query.title}%`);
+    if (query.tribe) data.whereILike("tribes.tribe_name", `%${query.tribe}%`);
     return (await data.then()).map(formatEmployeeDTO);
 }
 
