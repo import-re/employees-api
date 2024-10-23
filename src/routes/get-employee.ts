@@ -19,7 +19,7 @@ export default function getIndex(fastify: FastifyInstance): RouteOptions {
             const { id } = request.params as GetParamsType;
             const data = await employeeModel.getEmployee(fastify, id);
             if (data === null) {
-                reply.code(404).send();
+                reply.code(404).send(`No employee with id ${id}`);
             }
             return reply.send(data);
         }

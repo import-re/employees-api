@@ -51,8 +51,7 @@ export async function getEmployees(fastify: FastifyInstance) {
 
 export async function getEmployee(fastify: FastifyInstance, id: number) {
     const data: EmployeeQueryResult[] = await fastify.db.from(TABLE_NAME).leftJoin("tribes", "tribes.tribe_id", "employees.tribe_id").select().where({ "employees.id":id });
-    console.log(data[0]);
-    if (data === undefined || data === null) {
+    if (data === undefined || data.length == 0) {
         return null;
     }
     return data.map(formatEmployeeDTO)[0];
@@ -60,9 +59,14 @@ export async function getEmployee(fastify: FastifyInstance, id: number) {
 }
 
 export async function postEmployees(fastify: FastifyInstance, newEmployee: PostBodyType) {
-    return await fastify.db.from(TABLE_NAME).insert({
+    const tribe_id = newEmployee.tribe_id;
+    const tribe = await fastify.db.from("tribes").where({ tribe_id }).select();
+    console.log(tribe);
+    if (tribe.length == 0) return null;
+    const data = await fastify.db.from(TABLE_NAME).insert({
         name: newEmployee.name,
         title: newEmployee.title,
         tribe_id: newEmployee.tribe_id
-    })
+    });
+    return data;
 };

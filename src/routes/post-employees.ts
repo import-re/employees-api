@@ -18,6 +18,9 @@ export default function getIndex(fastify: FastifyInstance): RouteOptions {
         handler: async function (request: FastifyRequest, reply: FastifyReply) {
             const newEmployee = request.body as PostBodyType;
             const employees = await employeeModel.postEmployees(fastify, newEmployee);
+            if (!employees) {
+                reply.code(404).send("Given tribe id does not exist.")
+            }
             reply.send(employees);    
         }
     };
