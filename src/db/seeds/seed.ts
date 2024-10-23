@@ -1,17 +1,18 @@
 import { Knex } from "knex";
+
 export async function seed(knex: Knex) {
-  const tribesSeedData= [
-    {"id": 1, "name": "Tech Tribe", "department": "Engineering"},
-    {"id": 2, "name": "Marketing Tribe", "department": "Marketing"},
-    {"id": 3, "name": "Product Tribe", "department": "Product Management"},
-    {"id": 4, "name": "Design Tribe", "department": "Design"},
-    {"id": 5, "name": "Sales Tribe", "department": "Sales"},
-    {"id": 6, "name": "Data Tribe", "department": "Data Science"},
-    {"id": 7, "name": "HR Tribe", "department": "Human Resources"},
-    {"id": 8, "name": "Finance Tribe", "department": "Finance"},
-    {"id": 9, "name": "Support Tribe", "department": "Customer Support"},
-    {"id": 10, "name": "Operations Tribe", "department": "Operations"}
-];
+  const tribesSeedData = [
+    {"tribe_id": 1, "tribe_name": "Tech Tribe", "department": "Engineering"},
+    {"tribe_id": 2, "tribe_name": "Marketing Tribe", "department": "Marketing"},
+    {"tribe_id": 3, "tribe_name": "Product Tribe", "department": "Product Management"},
+    {"tribe_id": 4, "tribe_name": "Design Tribe", "department": "Design"},
+    {"tribe_id": 5, "tribe_name": "Sales Tribe", "department": "Sales"},
+    {"tribe_id": 6, "tribe_name": "Data Tribe", "department": "Data Science"},
+    {"tribe_id": 7, "tribe_name": "HR Tribe", "department": "Human Resources"},
+    {"tribe_id": 8, "tribe_name": "Finance Tribe", "department": "Finance"},
+    {"tribe_id": 9, "tribe_name": "Support Tribe", "department": "Customer Support"},
+    {"tribe_id": 10, "tribe_name": "Operations Tribe", "department": "Operations"}
+  ];
 
   const employeesSeedData = [
     {"name": "Alice Johnson", "title": "Software Engineer", "tribe_id": 1},
@@ -92,7 +93,7 @@ export async function seed(knex: Knex) {
     {"name": "Xena Stone", "title": "Sales Engineer", "tribe_id": 2},
     {"name": "Yasmin Torres", "title": "Graphic Artist", "tribe_id": 3},
     {"name": "Zara Price", "title": "Client Relations Manager", "tribe_id": 1}
-];
+  ];
 
   await knex("tribes").insert(tribesSeedData);
   await knex("employees").insert(employeesSeedData);

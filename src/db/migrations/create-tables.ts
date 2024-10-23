@@ -2,8 +2,8 @@ import { Knex } from "knex";
 
 export async function up(knex: Knex) {
     await knex.schema.createTable("tribes", (table) => {
-        table.increments("id").primary();
-        table.text("name").notNullable();
+        table.increments("tribe_id").primary();
+        table.text("tribe_name").notNullable();
         table.text("department").notNullable();
     })
 
@@ -14,8 +14,8 @@ export async function up(knex: Knex) {
         table.integer("tribe_id")
             .index()
             .unsigned()
-            .references("id")
-            .inTable("employees");
+            .references("tribe_id")
+            .inTable("tribes");
     })
 }
 
