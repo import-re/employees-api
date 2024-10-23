@@ -3,3 +3,4 @@ export interface Tribe {
     tribe_name: string,
     department: string
 };
+

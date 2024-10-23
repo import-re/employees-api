@@ -70,3 +70,8 @@ export async function postEmployees(fastify: FastifyInstance, newEmployee: PostB
     });
     return data;
 };
+
+
+export async function deleteEmployee(fastify: FastifyInstance, id: number): Promise<void> {
+    await fastify.db.from(TABLE_NAME).where( {"employees.id": id} ).del();
+}
