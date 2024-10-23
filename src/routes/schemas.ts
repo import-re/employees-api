@@ -13,3 +13,12 @@ export const GetParamsSchema = Type.Object({
 });
 
 export type GetParamsType = Static<typeof GetParamsSchema>;
+
+
+export const SearchQuerySchema = Type.Object({
+    name: Type.Optional(Type.String()),
+    title: Type.Optional(Type.String()),
+    tribe: Type.Optional(Type.String()),
+});
+
+export type SearchQueryType = Static<typeof SearchQuerySchema>;

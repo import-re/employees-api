@@ -1,5 +1,5 @@
 import fastify, { FastifyInstance } from "fastify";
-import { PostBodyType } from "../routes/schemas";
+import { PostBodyType, SearchQueryType } from "../routes/schemas";
 import { Tribe } from "./tribe";
 
 const TABLE_NAME = "employees";
@@ -44,9 +44,13 @@ const formatEmployeeDTO = (queryResult: EmployeeQueryResult): EmployeeDTO => {
     }
 }
 
-export async function getEmployees(fastify: FastifyInstance) {
-    const data = await fastify.db.from(TABLE_NAME).leftJoin("tribes", "tribes.tribe_id", "employees.tribe_id").select();
-    return data.map(formatEmployeeDTO);
+export async function getEmployees(fastify: FastifyInstance, query: SearchQueryType) {
+    const data = fastify.db.from(TABLE_NAME).leftJoin("tribes", "tribes.tribe_id", "employees.tribe_id").select();
+    
+    if (query.name) data.whereLike("employees.name", `%${query.name}%`);
+    if (query.title) data.whereLike("employees.title", `%${query.title}%`);
+    if (query.tribe) data.whereLike("tribes.tribe_name", `%${query.tribe}%`);
+    return (await data.then()).map(formatEmployeeDTO);
 }
 
 export async function getEmployee(fastify: FastifyInstance, id: number) {
