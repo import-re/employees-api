@@ -1,7 +1,7 @@
 import knex from "knex";
 import knexConfig from "../../knexconfig";
 
-type envType = "development" | "production";
+type envType = "development" | "production" | "test";
 const env = (process.env.ENVIRONMENT as envType) ?? "development";
 
 export default function getKnexInstance() {

@@ -18,7 +18,7 @@ export default function getIndex(fastify: FastifyInstance): RouteOptions {
         handler: async function (request: FastifyRequest, reply: FastifyReply) {
             const { id } = request.params as GetParamsType;
             await employeeModel.deleteEmployee(fastify, id);
-            return reply.code(204).send();
+            return reply.code(204).send({error: "Sucess."});
         }
     }
 }

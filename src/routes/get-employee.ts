@@ -18,8 +18,8 @@ export default function getIndex(fastify: FastifyInstance): RouteOptions {
         handler: async function (request: FastifyRequest, reply: FastifyReply) {
             const { id } = request.params as GetParamsType;
             const data = await employeeModel.getEmployee(fastify, id);
-            if (data === null) {
-                reply.code(404).send(`No employee with id ${id}`);
+            if (data === null || data === undefined) {
+                reply.code(404).send({error: `No employee with id ${id} is found`});
             }
             return reply.send(data);
         }

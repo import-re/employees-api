@@ -3,7 +3,7 @@ import { Static, Type } from "@sinclair/typebox";
 export const PostBodySchema = Type.Object({
     name: Type.String(),
     title: Type.String(),
-    tribe_id: Type.Number()
+    tribe_id: Type.Integer()
 });
 
 export type PostBodyType = Static<typeof PostBodySchema>;
