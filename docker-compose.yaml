@@ -10,8 +10,10 @@ services:
       - DB_DATABASE=employees
       - DB_USER=root
       - DB_PASSWORD=password
+      - REDIS_HOST=redis
     command: npm start
     depends_on:
+      - redis
       - mysql
   mysql:
     image: mysql:latest
@@ -20,3 +22,9 @@ services:
       - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=password
+  redis:
+    image: redis:latest
+    container_name: employees-redis
+    ports:
+      - 6379:6379
+    command: redis-server

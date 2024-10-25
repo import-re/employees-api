@@ -1,10 +1,13 @@
 import Fastify, { FastifyInstance } from "fastify";
 import routes from "./routes";
 import knexPlugin from "./plugins/knex-plugins";
+import redisPlugin from "./plugins/redis-plugins";
+
 
 const fastify: FastifyInstance = Fastify();
 
 fastify.register(knexPlugin);
+fastify.register(redisPlugin);
 fastify.register(routes);
 
 fastify
