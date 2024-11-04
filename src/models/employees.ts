@@ -21,7 +21,7 @@ interface EmployeeQueryResult {
   department: string;
 }
 
-interface EmployeeDTO {
+export interface EmployeeDTO {
   id: number;
   name: string;
   title: string;
@@ -87,13 +87,13 @@ export async function postEmployees(
 ) {
   const tribe_id = newEmployee.tribe_id;
   const tribe = await fastify.db.from("tribes").where({ tribe_id }).select();
-  console.log(tribe);
   if (tribe.length == 0) return null;
   const data = await fastify.db.from(TABLE_NAME).insert({
     name: newEmployee.name,
     title: newEmployee.title,
     tribe_id: newEmployee.tribe_id,
   });
+  console.log(data);
   return data;
 }
 
