@@ -1,15 +1,20 @@
 import { Await, defer, useLoaderData } from "react-router-dom";
-import { Tribe as TribeDTO} from "../../../src/models/tribe"
 import Tribe from "./Tribe";
 import { Suspense } from "react";
 
-export async function loader() {
-  return defer({ tribesPromise: tribesPromise() });
+export interface TribeDTO {
+  tribe_id: number;
+  tribe_name: string;
+  department: string;
 }
 
 async function tribesPromise() {
   const data = await fetch("/api/tribes");
   return await data.json();
+}
+
+export async function loader() {
+  return defer({ tribesPromise: tribesPromise() });
 }
 
 export default function TribeList() {
@@ -31,4 +36,3 @@ export default function TribeList() {
     </Suspense>
   );
 }
-

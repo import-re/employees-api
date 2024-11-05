@@ -3,7 +3,6 @@ import { PostBodyType, SearchQueryType } from "../routes/schemas";
 import { Tribe } from "./tribe";
 
 const TABLE_NAME = "employees";
-const GET_EMPLOYEES_CACHE_KEY = "getEmployees";
 
 export interface Employee {
   id: number;
@@ -53,17 +52,10 @@ export async function getEmployees(
     .from(TABLE_NAME)
     .leftJoin("tribes", "tribes.tribe_id", "employees.tribe_id")
     .select();
-    if (!query.name && !query.title && !query.tribe) {
-        const cache = await fastify.cache.get(GET_EMPLOYEES_CACHE_KEY);
-        if (cache) {
-            return JSON.parse(cache);
-        }
-    }
   if (query.name) data.whereLike("employees.name", `%${query.name}%`);
   if (query.title) data.whereLike("employees.title", `%${query.title}%`);
   if (query.tribe) data.whereLike("tribes.tribe_name", `%${query.tribe}%`);
   const result = (await data.then()).map(formatEmployeeDTO);
-  await fastify.cache.set(GET_EMPLOYEES_CACHE_KEY, await JSON.stringify(result)); 
   return result;
 }
 
@@ -73,8 +65,6 @@ export async function getEmployee(fastify: FastifyInstance, id: number) {
     .leftJoin("tribes", "tribes.tribe_id", "employees.tribe_id")
     .select()
     .where({ "employees.id": id });
-    console.log("heree");
-    console.log(id);
   if (data === undefined || data.length == 0) {
     return null;
   }
@@ -93,8 +83,7 @@ export async function postEmployees(
     title: newEmployee.title,
     tribe_id: newEmployee.tribe_id,
   });
-  console.log(data);
-  return data;
+  return getEmployee(fastify, data[0]);
 }
 
 export async function deleteEmployee(
@@ -102,4 +91,66 @@ export async function deleteEmployee(
   id: number
 ): Promise<void> {
   await fastify.db.from(TABLE_NAME).where({ "employees.id": id }).del();
+}
+
+export async function putEmployee(
+  fastify: FastifyInstance,
+  employeeId: number,
+  newEmployee: PostBodyType
+) {
+  const tribe_id = newEmployee.tribe_id;
+  const tribe = await fastify.db.from("tribes").where({ tribe_id }).select();
+  if (tribe.length == 0) return null;
+  const data = await fastify.db
+    .from(TABLE_NAME)
+    .where({ id: employeeId })
+    .update(newEmployee);
+  return getEmployee(fastify, employeeId);
+}
+
+interface employeeReport {
+  id: number;
+  name: string;
+}
+
+type Report = {
+  name: {
+    name: string;
+    id: number;
+    department: string;
+    employees: employeeReport[];
+  };
+};
+
+export async function getReport(fastify: FastifyInstance) {
+  const data: EmployeeQueryResult[] = await fastify.db
+    .from(TABLE_NAME)
+    .leftJoin("tribes", "tribes.tribe_id", "employees.tribe_id")
+    .select();
+
+  const result = data.map(formatEmployeeDTO);
+  const reportList: Report[] = [];
+
+  for (const employee of result) {
+    const tribe = employee.tribe;
+    const existingTribe = reportList.find((t) => t.name.id === tribe.tribe_id);
+
+    if (existingTribe) {
+      existingTribe.name.employees.push({
+        id: employee.id,
+        name: employee.name,
+      });
+    } else {
+      reportList.push({
+        name: {
+          name: tribe.tribe_name,
+          id: tribe.tribe_id,
+          department: tribe.department,
+          employees: [{ id: employee.id, name: employee.name }],
+        },
+      });
+    }
+  }
+
+  return reportList;
 }
