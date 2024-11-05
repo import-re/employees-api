@@ -1,7 +1,7 @@
 import Fastify from "fastify";
-import knexPlugin from "../employees-api/src/plugins/knex-plugins";
-import redisPlugin from "../employees-api/src/plugins/redis-plugins";
-import routes from "../employees-api/src/routes";
+import knexPlugin from "../src/plugins/knex-plugins";
+import redisPlugin from "../src/plugins/redis-plugins";
+import routes from "../src/routes";
 
 jest.mock("redis", () => ({
   createClient: jest.fn().mockReturnValue({
